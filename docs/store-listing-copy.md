@@ -91,7 +91,10 @@ Required (Website content is checked). Publish `PRIVACY.md` as a public HTTPS pa
 
 ## Support URL
 
-`mailto:` is rejected. Use a public GitHub repo Issues page, or a Notion "Report an issue" page with a contact email. Decide and fill before submit.
+```
+https://github.com/Issac-Nguyen/form-draft-autosave/issues
+```
+(Public repo, Issues enabled — reachable HTTPS, accepted by the store.)
 
 ## Category
 
