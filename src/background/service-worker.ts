@@ -8,7 +8,7 @@ type Msg =
   | { kind: 'CLEAR'; origin: string; path: string }
   | { kind: 'HAS'; origin: string; path: string };
 
-export async function handleMessage(msg: Msg): Promise<{ ok: true } | { has: boolean }> {
+export async function handleMessage(msg: Msg): Promise<{ ok: boolean } | { has: boolean }> {
   if (msg.kind === 'SAVE') {
     await putField(msg.origin, msg.path, msg.field);
     const s = await getSettings();
@@ -27,13 +27,18 @@ export async function runMaintenance(): Promise<void> {
 // --- Chrome wiring (not unit-tested; exercised in e2e) ---
 if (typeof chrome !== 'undefined' && chrome.runtime?.onMessage) {
   chrome.runtime.onMessage.addListener((msg: Msg, sender, sendResponse) => {
-    handleMessage(msg).then((res) => {
-      if ('has' in res && sender.tab?.id != null) {
-        chrome.action.setBadgeText({ tabId: sender.tab.id, text: res.has ? '●' : '' });
-        chrome.action.setBadgeBackgroundColor({ color: '#2563eb' });
-      }
-      sendResponse(res);
-    });
+    handleMessage(msg)
+      .then((res) => {
+        if ('has' in res && sender.tab?.id != null) {
+          chrome.action.setBadgeText({ tabId: sender.tab.id, text: res.has ? '●' : '' });
+          chrome.action.setBadgeBackgroundColor({ color: '#2563eb' });
+        }
+        sendResponse(res);
+      })
+      .catch((err) => {
+        console.error('[form-draft-autosave] message handler error:', err);
+        sendResponse({ ok: false });
+      });
     return true; // async response
   });
   chrome.alarms?.create('maintenance', { periodInMinutes: 1440 });
