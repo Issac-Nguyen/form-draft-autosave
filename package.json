@@ -1,0 +1,28 @@
+{
+  "name": "form-draft-autosave",
+  "version": "1.0.0",
+  "description": "Autosave and recover text typed into any web form. 100% local.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json && tsc --noEmit",
+    "e2e": "playwright test"
+  },
+  "dependencies": { "svelte": "^5.55.5" },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.4.0",
+    "@playwright/test": "^1.59.1",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/svelte": "^5.3.1",
+    "@types/chrome": "^0.1.40",
+    "jsdom": "^29.1.1",
+    "svelte-check": "^4.4.7",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
+  }
+}
