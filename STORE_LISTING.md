@@ -116,7 +116,7 @@ Tick the certification checkbox: *"I certify that the above disclosures reflect 
 
 ## Privacy policy URL
 
-> _PENDING_ — publish `PRIVACY.md` as a public Notion page (same as bug-report-screenshot) and paste the share URL here. Required because **Website content** is disclosed.
+> https://catkin-lion-07e.notion.site/Privacy-Policy-Form-Draft-Autosave-3622fed9431080b9af38dd93501d828e
 
 ## Listing assets
 
@@ -139,7 +139,7 @@ Promo tiles (24-bit RGB PNG, no alpha — verified):
 - [x] 3 listing screenshots at 1280×800 in `store-assets/`
 - [x] Promo tiles RGB no-alpha in `store-assets/`
 - [x] Support URL reachable: https://github.com/Issac-Nguyen/form-draft-autosave/issues
-- [ ] Publish `PRIVACY.md` to Notion → paste Privacy policy URL above
+- [x] Publish `PRIVACY.md` to Notion → Privacy policy URL filled above
 - [ ] Smoke-test unpacked `dist/` in a fresh Chrome profile (type → reload → Restore; password not saved; submit clears)
 - [ ] Upload zip + screenshots at https://chrome.google.com/webstore/devconsole
 - [ ] Pay one-time $5 developer registration fee (if first publish under this account)
