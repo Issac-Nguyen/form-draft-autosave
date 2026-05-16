@@ -71,7 +71,7 @@ cd form-draft-autosave && git init && printf "node_modules\ndist\n*.zip\n.DS_Sto
     "typecheck": "svelte-check --tsconfig ./tsconfig.json && tsc --noEmit",
     "e2e": "playwright test"
   },
-  "dependencies": { "svelte": "^5.55.5" },
+  "dependencies": { "svelte": "^5.55.5", "dompurify": "^3.2.4" },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.4.0",
     "@playwright/test": "^1.59.1",
@@ -871,6 +871,8 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Write minimal implementation**
 
 ```ts
+import DOMPurify from 'dompurify';
+
 const TEXT_INPUT_TYPES = new Set(['text', 'search', 'email', 'url', 'tel', 'password', '']);
 
 export function captured(root: Document | HTMLElement): HTMLElement[] {
@@ -895,24 +897,12 @@ export function readValue(e: HTMLElement): string {
   return e.innerHTML;
 }
 
-function sanitize(html: string): string {
-  const tpl = document.createElement('template');
-  tpl.innerHTML = html;
-  tpl.content.querySelectorAll('script, iframe, object, embed').forEach((n) => n.remove());
-  tpl.content.querySelectorAll('*').forEach((el) => {
-    [...el.attributes].forEach((a) => {
-      if (/^on/i.test(a.name) || (a.name === 'src' && /^https?:/i.test(a.value))) el.removeAttribute(a.name);
-    });
-  });
-  return tpl.innerHTML;
-}
-
 export function writeValue(e: HTMLElement, value: string): void {
   const tag = e.tagName.toLowerCase();
   if (tag === 'input' || tag === 'textarea') {
     (e as HTMLInputElement | HTMLTextAreaElement).value = value;
   } else {
-    e.innerHTML = sanitize(value);
+    e.innerHTML = DOMPurify.sanitize(value, { USE_PROFILES: { html: true } });
   }
   e.dispatchEvent(new Event('input', { bubbles: true }));
   e.dispatchEvent(new Event('change', { bubbles: true }));

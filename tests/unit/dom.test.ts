@@ -19,13 +19,29 @@ describe('content dom helpers', () => {
     expect(d.innerHTML).toContain('x');
     expect(readValue(d)).toContain('x');
   });
-  it('sanitizes script/handlers on contenteditable write', () => {
+  it('sanitizes XSS vectors on contenteditable write (DOMPurify)', () => {
     const d = document.createElement('div'); d.setAttribute('contenteditable', 'true');
-    writeValue(d, '<img src="https://evil.test/x.png"><script>alert(1)</script><b onclick="x()">ok</b>');
-    expect(d.innerHTML).not.toContain('<script');
-    expect(d.innerHTML).not.toContain('onclick');
-    expect(d.innerHTML).not.toContain('https://evil.test');
-    expect(d.innerHTML).toContain('ok');
+    writeValue(d,
+      '<script>alert(1)</script>' +
+      '<b onclick="x()">ok</b>' +
+      '<a href="javascript:alert(1)">link</a>' +
+      '<img src="x" onerror="alert(1)">' +
+      '<svg><script>alert(1)</script></svg>' +
+      '<button formaction="javascript:alert(1)">go</button>' +
+      '<template><img src=q onerror=alert(1)></template>');
+    const html = d.innerHTML;
+    expect(html).not.toContain('<script');
+    expect(html).not.toContain('onclick');
+    expect(html).not.toContain('onerror');
+    expect(html).not.toMatch(/javascript:/i);
+    expect(html).not.toContain('formaction');
+    expect(html).toContain('ok');
+  });
+  it('keeps benign formatting and text', () => {
+    const d = document.createElement('div'); d.setAttribute('contenteditable', 'true');
+    writeValue(d, '<p>Hello <b>world</b></p>');
+    expect(d.innerHTML).toContain('Hello');
+    expect(d.innerHTML).toContain('<b>world</b>');
   });
   it('captured() finds text input, textarea, contenteditable (incl password structurally)', () => {
     document.body.innerHTML =

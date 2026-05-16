@@ -116,7 +116,7 @@ No `<all_urls>`-broadening extras; no `tabs`, `cookies`, `webRequest`.
 - Storage write failure (quota/other): catch, run eviction, retry once; if still failing, drop oldest and surface a non-blocking badge state — never throw into the page.
 - Signature collision (two fields same signature): disambiguate by ordinal index; if still ambiguous, restore by order, flag in popup preview.
 - Field gone on restore (DOM changed): skip that field, show "field not found" in popup, keep draft for manual copy.
-- contenteditable serialize: store sanitized innerHTML (strip `<script>`, event handlers, external `src`); restore as text if sanitization removes everything meaningful.
+- contenteditable serialize: store raw innerHTML; on restore, sanitize with DOMPurify (bundled, no remote code) before writing — blocks script/event-handler/`javascript:`/mXSS vectors.
 
 ## Testing
 
