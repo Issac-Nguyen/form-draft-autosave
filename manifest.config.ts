@@ -14,7 +14,7 @@ export default defineManifest({
     run_at: 'document_idle',
     all_frames: true,
   }],
-  action: { default_title: 'Form Draft Autosave' },
+  action: { default_title: 'Form Draft Autosave', default_popup: 'src/popup/index.html' },
   options_ui: { page: 'src/options/index.html', open_in_tab: true },
   icons: { '16': 'icons/icon16.png', '48': 'icons/icon48.png', '128': 'icons/icon128.png' },
 });
