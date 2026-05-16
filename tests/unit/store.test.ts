@@ -7,7 +7,7 @@ describe('store', () => {
   it('puts and reads a field', async () => {
     await putField('https://a.com', '/p', { sig: 's1', value: 'hi', type: 'text' });
     const d = await getDraft('https://a.com', '/p');
-    expect(d?.fields['s1'].value).toBe('hi');
+    expect(d?.fields['s1']!.value).toBe('hi');
     expect(typeof d?.ts).toBe('number');
   });
   it('overwrites same sig, keeps others', async () => {
@@ -15,21 +15,21 @@ describe('store', () => {
     await putField('https://a.com', '/p', { sig: 's2', value: 'two', type: 'text' });
     await putField('https://a.com', '/p', { sig: 's1', value: 'ONE', type: 'text' });
     const d = await getDraft('https://a.com', '/p');
-    expect(d?.fields['s1'].value).toBe('ONE');
-    expect(d?.fields['s2'].value).toBe('two');
+    expect(d?.fields['s1']!.value).toBe('ONE');
+    expect(d?.fields['s2']!.value).toBe('two');
   });
   it('truncates values over cap', async () => {
     const big = 'x'.repeat(150_000);
     await putField('https://a.com', '/p', { sig: 's1', value: big, type: 'textarea' });
     const d = await getDraft('https://a.com', '/p');
-    expect(d!.fields['s1'].value.length).toBe(100_000);
-    expect(d!.fields['s1'].truncated).toBe(true);
+    expect(d!.fields['s1']!.value.length).toBe(100_000);
+    expect(d!.fields['s1']!.truncated).toBe(true);
   });
   it('clears stale truncated flag when value later fits', async () => {
     await putField('https://a.com', '/p', { sig: 's1', value: 'x'.repeat(150_000), type: 'textarea' });
-    expect((await getDraft('https://a.com', '/p'))!.fields['s1'].truncated).toBe(true);
+    expect((await getDraft('https://a.com', '/p'))!.fields['s1']!.truncated).toBe(true);
     await putField('https://a.com', '/p', { sig: 's1', value: 'short', type: 'textarea' });
-    const f = (await getDraft('https://a.com', '/p'))!.fields['s1'];
+    const f = (await getDraft('https://a.com', '/p'))!.fields['s1']!;
     expect(f.value).toBe('short');
     expect(f.truncated).toBeUndefined();
   });

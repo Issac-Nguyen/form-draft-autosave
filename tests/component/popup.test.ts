@@ -9,7 +9,7 @@ describe('popup App', () => {
   });
   it('lists fields and a Restore button when draft present', async () => {
     const draft = { origin: 'https://a.com', path: '/p', ts: Date.now(),
-      fields: { s1: { sig: 's1', value: 'hello world', type: 'textarea' } } };
+      fields: { s1: { sig: 's1', value: 'hello world', type: 'textarea' as const } } };
     render(App, { props: { draft } });
     expect(screen.getByRole('button', { name: /restore/i })).toBeInTheDocument();
     expect(screen.getByText(/hello world/)).toBeInTheDocument();

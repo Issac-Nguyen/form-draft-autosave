@@ -29,7 +29,9 @@ describe('fieldSignature', () => {
 
   it('disambiguates identical siblings by index', () => {
     const form = el('<form action="/x"><input name="q" type="text"><input name="q" type="text"></form>');
-    const [i0, i1] = Array.from(form.querySelectorAll('input'));
+    const inputs = Array.from(form.querySelectorAll('input'));
+    const i0 = inputs[0]!;
+    const i1 = inputs[1]!;
     expect(fieldSignature(i0)).not.toBe(fieldSignature(i1));
   });
 });
