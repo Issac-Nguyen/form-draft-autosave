@@ -42,7 +42,7 @@ Shared `lib/`: `signature.ts`, `sensitive.ts`, `store.ts`, `eviction.ts`, `setti
 
 ## Field identity — signature
 
-Signature = stable hash of: field `name` (or `id` fallback) + `type` + nearest `<label>` / `aria-label` text + owning `form` `action` (or `name`) + ordinal index among same-signature siblings. Excludes volatile generated ids. Stored per draft as the field key.
+Signature = stable hash of: field `name` (or `id` fallback) + `type` + nearest `<label>` / `aria-label` text + owning `form` `action` (or `name`) + ordinal index among same-signature siblings. Excludes volatile generated ids. Stored per draft as the field key. A separate human-readable `label` (label/aria-label/placeholder/name/id, display-only, not part of the signature) is stored per field and shown in the popup.
 
 ## Data flow
 

@@ -14,4 +14,11 @@ describe('popup App', () => {
     expect(screen.getByRole('button', { name: /restore/i })).toBeInTheDocument();
     expect(screen.getByText(/hello world/)).toBeInTheDocument();
   });
+
+  it('shows human-readable label when field has a label', async () => {
+    const draft = { origin: 'https://a.com', path: '/p', ts: Date.now(),
+      fields: { s1: { sig: 's1', value: 'Jane Doe', type: 'text' as const, label: 'Full name' } } };
+    render(App, { props: { draft } });
+    expect(screen.getByText(/Full name/)).toBeInTheDocument();
+  });
 });

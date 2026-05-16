@@ -14,7 +14,7 @@
     <ul style="list-style:none;padding:0;margin:0 0 12px;max-height:240px;overflow:auto">
       {#each Object.values(draft.fields) as f}
         <li style="border:1px solid #e5e7eb;border-radius:6px;padding:6px;margin-bottom:6px">
-          <small style="color:#6b7280">{f.type}{f.truncated ? ' (truncated)' : ''}</small>
+          <small style="color:#6b7280">{f.label || f.type}{f.truncated ? ' (truncated)' : ''}</small>
           <div style="white-space:pre-wrap;word-break:break-word">{f.value.slice(0, 400)}</div>
         </li>
       {/each}

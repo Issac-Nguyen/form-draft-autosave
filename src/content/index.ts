@@ -1,4 +1,4 @@
-import { fieldSignature } from '../lib/signature';
+import { fieldSignature, fieldLabel } from '../lib/signature';
 import { isSensitive } from '../lib/sensitive';
 import { captured, readValue, writeValue } from './dom';
 import type { DraftField, FieldType } from '../types';
@@ -27,7 +27,7 @@ function onInput(ev: Event): void {
   const prev = timers.get(e);
   if (prev !== undefined) clearTimeout(prev);
   const t = window.setTimeout(() => {
-    const field: DraftField = { sig: fieldSignature(e), value: readValue(e), type: fieldType(e) };
+    const field: DraftField = { sig: fieldSignature(e), value: readValue(e), type: fieldType(e), label: fieldLabel(e) };
     if (field.value.trim() === '') return;
     chrome.runtime.sendMessage({ kind: 'SAVE', origin, path, field });
   }, debounceMs);

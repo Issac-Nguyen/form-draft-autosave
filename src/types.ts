@@ -5,6 +5,7 @@ export interface DraftField {
   value: string;
   type: FieldType;
   truncated?: boolean;
+  label?: string;
 }
 
 export interface DraftRecord {

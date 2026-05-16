@@ -35,6 +35,30 @@ function siblingIndex(elm: HTMLElement, key: string): number {
   return idx;
 }
 
+export function fieldLabel(elm: HTMLElement): string {
+  // First 3: same as labelText (label[for=id], wrapping label, aria-label)
+  const id = elm.getAttribute('id');
+  if (id) {
+    // Search from the root node (handles detached subtrees and shadow roots)
+    const root = elm.getRootNode() as Document | Element;
+    const lbl = root.querySelector(`label[for="${CSS.escape(id)}"]`);
+    if (lbl?.textContent?.trim()) return lbl.textContent.trim().slice(0, 60);
+  }
+  const wrap = elm.closest('label');
+  if (wrap?.textContent?.trim()) return wrap.textContent.trim().slice(0, 60);
+  const ariaLabel = elm.getAttribute('aria-label')?.trim();
+  if (ariaLabel) return ariaLabel.slice(0, 60);
+  // 4: placeholder
+  const placeholder = elm.getAttribute('placeholder')?.trim();
+  if (placeholder) return placeholder.slice(0, 60);
+  // 5: name
+  const name = elm.getAttribute('name')?.trim();
+  if (name) return name.slice(0, 60);
+  // 6: id
+  if (id?.trim()) return id.trim().slice(0, 60);
+  return '';
+}
+
 export function fieldSignature(elm: HTMLElement): string {
   const key = rawKey(elm);
   return djb2(`${key}|${siblingIndex(elm, key)}`);
