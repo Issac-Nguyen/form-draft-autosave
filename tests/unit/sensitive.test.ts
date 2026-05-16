@@ -22,6 +22,11 @@ describe('isSensitive', () => {
     expect(isSensitive(input({ type: 'text', id: 'user-ssn' }))).toBe(true);
     expect(isSensitive(input({ type: 'text', name: 'otpCode' }))).toBe(true);
   });
+  it('blocks cc/otp autocomplete with section/shipping/billing prefixes', () => {
+    expect(isSensitive(input({ type: 'text', autocomplete: 'billing cc-number' }))).toBe(true);
+    expect(isSensitive(input({ type: 'text', autocomplete: 'section-blue shipping cc-expiry' }))).toBe(true);
+    expect(isSensitive(input({ type: 'text', autocomplete: 'shipping one-time-code' }))).toBe(true);
+  });
   it('allows normal text/textarea/contenteditable', () => {
     expect(isSensitive(input({ type: 'text', name: 'comment' }))).toBe(false);
     const ta = document.createElement('textarea');

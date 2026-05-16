@@ -388,7 +388,7 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Write minimal implementation**
 
 ```ts
-const BLOCK_AUTOCOMPLETE = /^(cc-|one-time-code|current-password|new-password)/i;
+const BLOCK_AUTOCOMPLETE = /(cc-|one-time-code|current-password|new-password)/i;
 const BLOCK_NAME = /pin|cvv|cvc|ssn|secret|token|otp|password|passwd/i;
 
 export function isSensitive(elm: HTMLElement): boolean {

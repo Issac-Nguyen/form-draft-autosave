@@ -84,7 +84,7 @@ Practical ceiling: 50 × 100KB = 5MB max, typically < 1MB. TTL and caps are user
 
 Never captured:
 - `input[type=password]`, `input[type=hidden]`
-- `autocomplete` in `{cc-*, one-time-code, current-password, new-password}`
+- `autocomplete` in `{cc-*, one-time-code, current-password, new-password}` (matched anywhere in the token list, so `billing cc-number` / `shipping one-time-code` are also excluded)
 - Fields whose `name`/`id` match `/pin|cvv|ssn|secret|token|otp/i`
 
 Behavior:
