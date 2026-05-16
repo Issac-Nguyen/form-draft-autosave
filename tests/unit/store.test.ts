@@ -25,6 +25,14 @@ describe('store', () => {
     expect(d!.fields['s1'].value.length).toBe(100_000);
     expect(d!.fields['s1'].truncated).toBe(true);
   });
+  it('clears stale truncated flag when value later fits', async () => {
+    await putField('https://a.com', '/p', { sig: 's1', value: 'x'.repeat(150_000), type: 'textarea' });
+    expect((await getDraft('https://a.com', '/p'))!.fields['s1'].truncated).toBe(true);
+    await putField('https://a.com', '/p', { sig: 's1', value: 'short', type: 'textarea' });
+    const f = (await getDraft('https://a.com', '/p'))!.fields['s1'];
+    expect(f.value).toBe('short');
+    expect(f.truncated).toBeUndefined();
+  });
   it('deletes and lists', async () => {
     await putField('https://a.com', '/p', { sig: 's1', value: 'hi', type: 'text' });
     await putField('https://b.com', '/q', { sig: 's1', value: 'yo', type: 'text' });

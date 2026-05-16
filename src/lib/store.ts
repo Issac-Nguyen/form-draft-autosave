@@ -12,10 +12,11 @@ export async function putField(origin: string, path: string, field: DraftField):
   const k = draftKey(origin, path);
   const existing = await getDraft(origin, path);
   const rec: DraftRecord = existing ?? { origin, path, fields: {}, ts: 0 };
-  let value = field.value;
-  let truncated = field.truncated;
-  if (value.length > PER_FIELD_CAP) { value = value.slice(0, PER_FIELD_CAP); truncated = true; }
-  rec.fields[field.sig] = { ...field, value, ...(truncated ? { truncated: true } : {}) };
+  const { truncated: _ignore, ...rest } = field;
+  let value = rest.value;
+  const truncated = value.length > PER_FIELD_CAP;
+  if (truncated) value = value.slice(0, PER_FIELD_CAP);
+  rec.fields[field.sig] = { ...rest, value, ...(truncated ? { truncated: true } : {}) };
   rec.ts = Date.now();
   await chrome.storage.local.set({ [k]: rec });
 }
