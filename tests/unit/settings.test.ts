@@ -18,4 +18,14 @@ describe('settings', () => {
     expect(await isBlocked('https://bank.example.com/login')).toBe(true);
     expect(await isBlocked('https://news.example.com/x')).toBe(false);
   });
+  it('blocklist matches subdomains and not lookalikes', async () => {
+    await saveSettings({ blocklist: ['bank.example.com'] });
+    expect(await isBlocked('https://api.bank.example.com/x')).toBe(true);
+    expect(await isBlocked('https://notbank.example.com/x')).toBe(false);
+  });
+  it('isBlocked returns false on malformed url', async () => {
+    await saveSettings({ blocklist: ['bank.example.com'] });
+    expect(await isBlocked('not-a-url')).toBe(false);
+    expect(await isBlocked('')).toBe(false);
+  });
 });
