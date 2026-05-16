@@ -3,6 +3,7 @@ import App from './App.svelte';
 import { getDraft } from '../lib/store';
 
 async function boot() {
+  // chrome.tabs.query/sendMessage need no "tabs" permission: active-tab URL is granted via <all_urls> host permission; do not add "tabs".
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   let draft = null;
   let origin = '', path = '';
@@ -17,8 +18,12 @@ async function boot() {
     if (tab?.id && draft) chrome.tabs.sendMessage(tab.id, { kind: 'RESTORE', fields: draft.fields });
   });
   window.addEventListener('fda-delete', async () => {
-    const { deleteDraft } = await import('../lib/store');
-    await deleteDraft(origin, path);
+    if (tab?.id) {
+      await chrome.runtime.sendMessage({ kind: 'CLEAR', origin, path });
+    } else {
+      const { deleteDraft } = await import('../lib/store');
+      await deleteDraft(origin, path);
+    }
     window.close();
   });
 }

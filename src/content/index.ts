@@ -57,8 +57,9 @@ async function init(): Promise<void> {
       }
       const missing = Object.keys(map).length - restored;
       send({ restored, missing });
+      return true;
     }
-    return true;
+    return false;
   });
 }
 

@@ -26,12 +26,19 @@ export async function runMaintenance(): Promise<void> {
 
 // --- Chrome wiring (not unit-tested; exercised in e2e) ---
 if (typeof chrome !== 'undefined' && chrome.runtime?.onMessage) {
+  function setBadge(tabId: number, has: boolean) {
+    chrome.action.setBadgeText({ tabId, text: has ? '●' : '' });
+    chrome.action.setBadgeBackgroundColor({ color: '#2563eb' });
+  }
+
   chrome.runtime.onMessage.addListener((msg: Msg, sender, sendResponse) => {
     handleMessage(msg)
       .then((res) => {
-        if ('has' in res && sender.tab?.id != null) {
-          chrome.action.setBadgeText({ tabId: sender.tab.id, text: res.has ? '●' : '' });
-          chrome.action.setBadgeBackgroundColor({ color: '#2563eb' });
+        const id = sender.tab?.id;
+        if (id != null) {
+          if (msg.kind === 'SAVE') setBadge(id, true);
+          else if (msg.kind === 'CLEAR') setBadge(id, false);
+          else if ('has' in res) setBadge(id, res.has);
         }
         sendResponse(res);
       })

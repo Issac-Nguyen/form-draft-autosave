@@ -7,13 +7,31 @@
   let ttlDays = $state(t0);
   let countCap = $state(c0);
   let blocklistText = $state(b0.join('\n'));
+  let status = $state('');
 
   function save() {
+    const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
     const blocklist = blocklistText.split('\n').map((s) => s.trim()).filter(Boolean);
     window.dispatchEvent(new CustomEvent('fda-save', {
-      detail: { debounceMs: +debounceMs, ttlDays: +ttlDays, countCap: +countCap, blocklist },
+      detail: {
+        debounceMs: clamp(+debounceMs, 200, 60000),
+        ttlDays: clamp(+ttlDays, 1, 365),
+        countCap: clamp(+countCap, 1, 500),
+        blocklist,
+      },
     }));
   }
+
+  function clearAll() {
+    if (!confirm('Delete all saved drafts? This cannot be undone.')) return;
+    window.dispatchEvent(new CustomEvent('fda-clear-all'));
+  }
+
+  $effect(() => {
+    function onStatus(e: Event) { status = (e as CustomEvent<string>).detail; }
+    window.addEventListener('fda-status', onStatus);
+    return () => window.removeEventListener('fda-status', onStatus);
+  });
 </script>
 
 <main style="max-width:520px;margin:24px auto;font:14px system-ui">
@@ -27,4 +45,6 @@
   <label for="blocklist">Blocked domains (one per line)</label><br>
   <textarea id="blocklist" rows="5" bind:value={blocklistText}></textarea><br><br>
   <button onclick={save}>Save</button>
+  <button onclick={clearAll}>Clear all saved drafts</button>
+  <p id="status" aria-live="polite">{status}</p>
 </main>

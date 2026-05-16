@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { putField, listDrafts } from '../../src/lib/store';
 import { evict, purgeExpired } from '../../src/lib/eviction';
 
@@ -6,9 +6,12 @@ beforeEach(async () => { await chrome.storage.local.clear(); });
 
 describe('eviction', () => {
   it('enforces count cap by LRU', async () => {
+    let t = 1_000_000;
+    const spy = vi.spyOn(Date, 'now').mockImplementation(() => (t += 1000));
     for (let i = 0; i < 55; i++) {
       await putField(`https://s${i}.com`, '/p', { sig: 'x', value: 'v', type: 'text' });
     }
+    spy.mockRestore();
     await evict({ countCap: 50, totalSoftBytes: 8_000_000, totalTargetBytes: 6_000_000 });
     const left = await listDrafts();
     expect(left.length).toBe(50);
